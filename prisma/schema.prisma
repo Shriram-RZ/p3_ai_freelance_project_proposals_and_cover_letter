@@ -1,0 +1,224 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  avatarUrl    String?
+  headline     String?
+  skills       String[] @default([])
+  hourlyRate   Int?
+  experience   String?  // "junior" | "mid" | "senior" | "expert"
+  bio          String?
+  portfolio    String?
+
+  plan         Plan     @default(FREE)
+  credits      Int      @default(50)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  proposals          Proposal[]
+  coverLetters       CoverLetter[]
+  templates          Template[]
+  aiGenerations      AiGeneration[]
+  savedJobs          SavedJob[]
+  chatSessions       ChatSession[]
+  pricingEstimations PricingEstimation[]
+  analytics          AnalyticsEvent[]
+  exports            ExportedDocument[]
+  resetTokens        PasswordResetToken[]
+}
+
+enum Plan {
+  FREE
+  PRO
+  TEAM
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Proposal {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  jobInput    String   // raw job description
+  platform    String   // upwork, fiverr, linkedin, freelancer, email, agency
+  tone        String   // professional, friendly, premium, technical, persuasive...
+  industry    String?
+  experience  String?
+  content     String   // generated proposal markdown
+  score       Int?     // 0-100 quality / conversion score
+  estimatedPrice Int?
+  estimatedDays  Int?
+  followUp    String?
+  status      String   @default("draft") // draft, sent, won, lost
+  starred     Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model CoverLetter {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  jobInput    String
+  company     String?
+  role        String?
+  tone        String
+  content     String
+  atsScore    Int?
+  starred     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model Template {
+  id          String   @id @default(cuid())
+  userId      String?
+  name        String
+  category    String   // proposal, cover-letter, follow-up, outreach
+  platform    String?
+  description String?
+  body        String
+  isPublic    Boolean  @default(false)
+  uses        Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([category])
+}
+
+model AiGeneration {
+  id          String   @id @default(cuid())
+  userId      String
+  kind        String   // proposal, cover-letter, rewrite, score, pricing, chat
+  prompt      String
+  output      String
+  model       String   @default("gemini-flash-latest")
+  tokensIn    Int?
+  tokensOut   Int?
+  durationMs  Int?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model SavedJob {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  source      String?  // upwork, linkedin, etc.
+  url         String?
+  description String
+  budget      String?
+  notes       String?
+  status      String   @default("new") // new, applied, interviewing, won, lost
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ChatSession {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String   @default("New chat")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    ChatMessage[]
+
+  @@index([userId, updatedAt])
+}
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  sessionId   String
+  role        String   // user, assistant, system
+  content     String
+  createdAt   DateTime @default(now())
+
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
+
+model PricingEstimation {
+  id          String   @id @default(cuid())
+  userId      String
+  jobInput    String
+  hourlyRate  Int?
+  scope       String?
+  fixedPrice  Int?
+  hourlyMin   Int?
+  hourlyMax   Int?
+  hours       Int?
+  rationale   String?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // generated, exported, copied, won, lost, viewed
+  resourceId  String?
+  resourceType String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type, createdAt])
+}
+
+model ExportedDocument {
+  id          String   @id @default(cuid())
+  userId      String
+  resourceId  String
+  resourceType String  // proposal, cover-letter
+  format      String   // pdf, docx, txt
+  filename    String
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
