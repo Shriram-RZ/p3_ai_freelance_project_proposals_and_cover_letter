@@ -24,7 +24,6 @@ export function LandingNav() {
         <nav className="hidden md:flex items-center gap-7 text-sm text-white/70">
           <a href="#features" className="hover:text-white transition-colors">Features</a>
           <a href="#demo" className="hover:text-white transition-colors">Demo</a>
-          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
           <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
         </nav>
         <div className="flex items-center gap-2">

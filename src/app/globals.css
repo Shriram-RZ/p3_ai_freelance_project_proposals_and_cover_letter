@@ -46,6 +46,14 @@ body {
     hsl(var(--background));
   background-attachment: fixed;
   min-height: 100vh;
+  letter-spacing: -0.011em;
+}
+
+/* Headings use the display face with tighter, balanced type */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), var(--font-geist-sans), system-ui, sans-serif;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
 }
 
 /* Subtle grid backdrop, fades out near edges */

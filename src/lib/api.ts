@@ -3,7 +3,7 @@
  * parsing with zod, and a thin auth guard for route handlers.
  */
 import { NextResponse } from "next/server";
-import { z, ZodError, type ZodType } from "zod";
+import { z, ZodError, type ZodTypeAny } from "zod";
 import { getSession, type SessionPayload } from "./auth";
 
 export type ApiHandler<T = unknown> = (ctx: {
@@ -19,7 +19,10 @@ export function fail(message: string, status = 400, code?: string) {
   return NextResponse.json({ ok: false, error: { message, code } }, { status });
 }
 
-export async function readBody<T>(req: Request, schema: ZodType<T>): Promise<T | Response> {
+export async function readBody<S extends ZodTypeAny>(
+  req: Request,
+  schema: S,
+): Promise<z.output<S> | Response> {
   try {
     const json = await req.json().catch(() => ({}));
     return schema.parse(json);

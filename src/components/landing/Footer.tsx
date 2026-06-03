@@ -22,7 +22,6 @@ export function LandingFooter() {
           <ul className="mt-4 space-y-2.5 text-sm text-white/70">
             <li><a className="hover:text-white" href="#features">Features</a></li>
             <li><a className="hover:text-white" href="#demo">Demo</a></li>
-            <li><a className="hover:text-white" href="#pricing">Pricing</a></li>
             <li><a className="hover:text-white" href="#faq">FAQ</a></li>
           </ul>
         </div>

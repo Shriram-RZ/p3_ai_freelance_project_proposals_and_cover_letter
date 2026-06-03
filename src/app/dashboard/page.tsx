@@ -1,14 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
-  FileText,
   Mail,
   Sparkles,
-  TrendingUp,
   ArrowRight,
   Bookmark,
   MessageSquare,
-  Zap,
 } from "lucide-react";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -109,7 +106,7 @@ export default async function DashboardHome() {
           label="Proposals"
           value={proposalsCount}
           delta="+ this month"
-          icon={FileText}
+          icon="FileText"
           accent="from-brand-500/30 to-purple-500/20"
           index={0}
         />
@@ -117,7 +114,7 @@ export default async function DashboardHome() {
           label="Cover letters"
           value={coverLettersCount}
           delta="ATS-ready"
-          icon={Mail}
+          icon="Mail"
           accent="from-fuchsia-500/30 to-pink-500/20"
           index={1}
         />
@@ -126,7 +123,7 @@ export default async function DashboardHome() {
           value={`${conversion}%`}
           delta={sent > 0 ? `${won}/${sent} wins` : "Send a few first"}
           trend={conversion > 30 ? "up" : "flat"}
-          icon={TrendingUp}
+          icon="TrendingUp"
           accent="from-emerald-500/30 to-cyan-500/20"
           index={2}
         />
@@ -134,7 +131,7 @@ export default async function DashboardHome() {
           label="AI runs"
           value={gens}
           delta={`${user.credits} credits left`}
-          icon={Zap}
+          icon="Zap"
           accent="from-amber-500/30 to-orange-500/20"
           index={3}
         />

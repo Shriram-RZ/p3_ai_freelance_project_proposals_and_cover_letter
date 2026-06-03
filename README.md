@@ -182,7 +182,35 @@ to keep output sounding human.
 4. Use a managed Postgres (Neon, Supabase, Vercel Postgres, Railway).
 5. After first deploy, run `npx prisma db push` against your prod URL once.
 
-### Docker / Railway / Render
+### Docker
+
+The repo ships a multi-stage `Dockerfile` (Next.js standalone output) and a
+`docker-compose.yml` that runs the app alongside Postgres.
+
+```bash
+# 1. Provide secrets — at minimum JWT_SECRET and GEMINI_API_KEY
+cp .env.example .env
+
+# 2. Build and start app + database
+docker compose up --build
+```
+
+The app comes up on http://localhost:3000. On startup the container runs
+`prisma migrate deploy` (or `prisma db push` when no migrations exist) against
+the bundled Postgres, so the schema is created automatically. Postgres data
+persists in the `postgres_data` volume.
+
+To build just the image:
+
+```bash
+docker build -t ai-freelance-assistant .
+docker run -p 3000:3000 --env-file .env ai-freelance-assistant
+```
+
+Override `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` in `.env` to change
+the database credentials (the compose file wires them into `DATABASE_URL`).
+
+### Railway / Render
 
 The app is a standard Next.js 15 server. `npm run build` produces a production
 bundle; `npm start` runs it on port 3000. Run `prisma generate` (already in the

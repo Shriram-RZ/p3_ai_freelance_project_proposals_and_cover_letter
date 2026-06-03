@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { FileText, Mail, TrendingUp, Zap, Trophy, Send } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -69,14 +69,14 @@ export default async function AnalyticsPage() {
       />
 
       <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Proposals" value={proposalsCount} icon={FileText} index={0} />
-        <StatCard label="Cover letters" value={coverLettersCount} icon={Mail} index={1} accent="from-fuchsia-500/30 to-pink-500/20" />
-        <StatCard label="Sent" value={sent} icon={Send} index={2} accent="from-blue-500/30 to-indigo-500/20" />
+        <StatCard label="Proposals" value={proposalsCount} icon="FileText" index={0} />
+        <StatCard label="Cover letters" value={coverLettersCount} icon="Mail" index={1} accent="from-fuchsia-500/30 to-pink-500/20" />
+        <StatCard label="Sent" value={sent} icon="Send" index={2} accent="from-blue-500/30 to-indigo-500/20" />
         <StatCard
           label="Conversion"
           value={`${conversion}%`}
           delta={`${won} wins · ${lost} losses`}
-          icon={TrendingUp}
+          icon="TrendingUp"
           accent="from-emerald-500/30 to-cyan-500/20"
           index={3}
           trend={conversion > 30 ? "up" : "flat"}

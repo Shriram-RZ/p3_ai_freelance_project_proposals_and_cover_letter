@@ -5,7 +5,8 @@ import { CHAT_SYSTEM } from "@/lib/prompts";
 import { fail, requireAuth } from "@/lib/api";
 
 const Body = z.object({
-  sessionId: z.string().optional(),
+  // Accept null (new chats have no session yet) as well as undefined.
+  sessionId: z.string().nullish(),
   messages: z
     .array(
       z.object({
@@ -55,11 +56,22 @@ export async function POST(req: Request) {
     });
   }
 
-  const stream = await geminiStream(asChat(parsed.data.messages), {
-    system: CHAT_SYSTEM,
-    temperature: 0.8,
-    maxOutputTokens: 1200,
-  });
+  let stream: ReadableStream<Uint8Array>;
+  try {
+    stream = await geminiStream(asChat(parsed.data.messages), {
+      system: CHAT_SYSTEM,
+      temperature: 0.8,
+      maxOutputTokens: 1200,
+    });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : "Chat generation failed";
+    const quota = /\b429\b|quota/i.test(msg);
+    return fail(
+      quota ? "AI quota exceeded — check your Gemini plan & billing." : msg,
+      502,
+      "ai_error",
+    );
+  }
 
   // Wrap so we can persist the assistant message after the stream completes.
   let assistantBuf = "";

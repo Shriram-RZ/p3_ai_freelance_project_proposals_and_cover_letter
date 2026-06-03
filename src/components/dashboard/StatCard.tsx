@@ -1,19 +1,43 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { type LucideIcon } from "lucide-react";
+import {
+  FileText,
+  Mail,
+  TrendingUp,
+  Zap,
+  Send,
+  Trophy,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
+
+// Icon components are functions and cannot be passed from a Server Component to
+// this Client Component, so callers pass an icon name and we resolve it here.
+const ICONS = {
+  FileText,
+  Mail,
+  TrendingUp,
+  Zap,
+  Send,
+  Trophy,
+  Sparkles,
+} satisfies Record<string, LucideIcon>;
+
+export type StatIconName = keyof typeof ICONS;
 
 type Props = {
   label: string;
   value: string | number;
   delta?: string;
   trend?: "up" | "down" | "flat";
-  icon: LucideIcon;
+  icon: StatIconName;
   accent?: string;
   index?: number;
 };
 
-export function StatCard({ label, value, delta, trend = "up", icon: Icon, accent = "from-brand-500/30 to-purple-500/20", index = 0 }: Props) {
+export function StatCard({ label, value, delta, trend = "up", icon, accent = "from-brand-500/30 to-purple-500/20", index = 0 }: Props) {
+  const Icon = ICONS[icon] ?? FileText;
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
