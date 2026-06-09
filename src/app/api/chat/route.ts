@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { asChat, geminiStream } from "@/lib/gemini";
+import { asChat, groqStream } from "@/lib/groq";
 import { CHAT_SYSTEM } from "@/lib/prompts";
 import { fail, requireAuth } from "@/lib/api";
 
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
   let stream: ReadableStream<Uint8Array>;
   try {
-    stream = await geminiStream(asChat(parsed.data.messages), {
+    stream = await groqStream(asChat(parsed.data.messages), {
       system: CHAT_SYSTEM,
       temperature: 0.8,
       maxOutputTokens: 1200,
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     const msg = e instanceof Error ? e.message : "Chat generation failed";
     const quota = /\b429\b|quota/i.test(msg);
     return fail(
-      quota ? "AI quota exceeded — check your Gemini plan & billing." : msg,
+      quota ? "AI quota exceeded — check your Groq plan & billing." : msg,
       502,
       "ai_error",
     );

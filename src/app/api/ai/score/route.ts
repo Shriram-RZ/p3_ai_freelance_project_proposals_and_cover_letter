@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { geminiJSON } from "@/lib/gemini";
+import { groqJSON } from "@/lib/groq";
 import { scorePrompt } from "@/lib/prompts";
 import { ok, fail, readBody, requireAuth } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   if (parsed instanceof Response) return parsed;
 
   try {
-    const result = await geminiJSON<ScoreOut>(
+    const result = await groqJSON<ScoreOut>(
       scorePrompt({ content: parsed.content, jobInput: parsed.jobInput }),
       { temperature: 0.2, maxOutputTokens: 600 }
     );

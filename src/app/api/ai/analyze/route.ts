@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { geminiJSON } from "@/lib/gemini";
+import { groqJSON } from "@/lib/groq";
 import { ok, fail, readBody, requireAuth } from "@/lib/api";
 
 const Body = z.object({
@@ -44,7 +44,7 @@ ${parsed.job}
 `.trim();
 
   try {
-    const result = await geminiJSON<Analysis>(prompt, {
+    const result = await groqJSON<Analysis>(prompt, {
       temperature: 0.2,
       maxOutputTokens: 600,
     });

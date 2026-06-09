@@ -2,7 +2,7 @@
 
 A production-ready AI SaaS that helps freelancers, developers, designers, and job
 seekers generate winning proposals, cover letters, and outreach. Built with
-Next.js 15, PostgreSQL/Prisma, custom JWT auth, and the Gemini Flash API.
+Next.js 15, PostgreSQL/Prisma, custom JWT auth, and the Groq API (Llama 3.3 70B).
 
 > Win more freelance clients with AI. Generate high-converting proposals and
 > personalized cover letters in seconds.
@@ -22,7 +22,7 @@ Next.js 15, PostgreSQL/Prisma, custom JWT auth, and the Gemini Flash API.
   specificity, voice, conversion, length — with actionable fixes.
 - **Pricing & Timeline AI** — fixed-price, hourly range, total hours, calendar
   days, with rationale and risks.
-- **Streaming Chat Copilot** — token-by-token streaming via Gemini SSE, markdown
+- **Streaming Chat Copilot** — token-by-token streaming via Groq SSE, markdown
   rendering, persistent sessions.
 - **Tone Presets** — 8 voices: professional, friendly, premium, confident,
   technical, persuasive, concise, startup.
@@ -65,7 +65,7 @@ src/
 ├── lib/
 │   ├── auth.ts            # bcrypt + jose JWT + cookie helpers
 │   ├── prisma.ts          # singleton Prisma client
-│   ├── gemini.ts          # Gemini REST + SSE streaming + JSON mode
+│   ├── groq.ts            # Groq (OpenAI-compatible) REST + SSE streaming + JSON mode
 │   ├── prompts.ts         # the entire prompt library
 │   ├── api.ts             # zod-typed body parsing + standardized responses
 │   ├── pdf.ts             # jsPDF export utility
@@ -95,8 +95,8 @@ Copy `.env.example` to `.env` and fill in:
 DATABASE_URL="postgresql://user:password@localhost:5432/ai_freelance"
 JWT_SECRET="run: openssl rand -base64 48"
 JWT_EXPIRES_IN="7d"
-GEMINI_API_KEY="your_key_from_aistudio.google.com/apikey"
-GEMINI_MODEL="gemini-flash-latest"
+GROQ_API_KEY="your_key_from_console.groq.com/keys"
+GROQ_MODEL="llama-3.1-8b-instant"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
@@ -134,16 +134,16 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 🤖 Gemini integration
+## 🤖 Groq integration
 
-`src/lib/gemini.ts` is a single-file client with:
+`src/lib/groq.ts` is a single-file client with:
 
-- `geminiGenerate(prompt, opts)` — one-shot text.
-- `geminiJSON<T>(prompt, opts)` — strict JSON-mode with parse fallback.
-- `geminiStream(prompt, opts)` — SSE streaming → returns a `ReadableStream`
+- `groqGenerate(prompt, opts)` — one-shot text.
+- `groqJSON<T>(prompt, opts)` — strict JSON-mode with parse fallback.
+- `groqStream(prompt, opts)` — SSE streaming → returns a `ReadableStream`
   ready to pipe to a client. Used by `/api/chat`.
 - Built-in retries on 429 / 5xx with exponential backoff.
-- `asChat([...])` helper to convert chat messages into Gemini's `Content[]`
+- `asChat([...])` helper to convert chat messages into Groq's `Message[]`
   format.
 
 All prompts live in `src/lib/prompts.ts` so you can tune voice in one place.
@@ -165,7 +165,7 @@ to keep output sounding human.
 | ORM          | Prisma 5                                                      |
 | Auth         | bcryptjs + jose JWT (custom)                                  |
 | Validation   | zod                                                           |
-| AI           | Gemini Flash REST + SSE                                       |
+| AI           | Groq (Llama 3.1 8B Instant) REST + SSE                               |
 | Markdown     | react-markdown + remark-gfm                                   |
 | PDF          | jsPDF                                                         |
 | Toasts       | sonner                                                        |
@@ -188,7 +188,7 @@ The repo ships a multi-stage `Dockerfile` (Next.js standalone output) and a
 `docker-compose.yml` that runs the app alongside Postgres.
 
 ```bash
-# 1. Provide secrets — at minimum JWT_SECRET and GEMINI_API_KEY
+# 1. Provide secrets — at minimum JWT_SECRET and GROQ_API_KEY
 cp .env.example .env
 
 # 2. Build and start app + database

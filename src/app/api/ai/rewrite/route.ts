@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { geminiGenerate } from "@/lib/gemini";
+import { groqGenerate } from "@/lib/groq";
 import { rewritePrompt, type Tone } from "@/lib/prompts";
 import { ok, fail, readBody, requireAuth } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   if (parsed instanceof Response) return parsed;
 
   try {
-    const out = await geminiGenerate(
+    const out = await groqGenerate(
       rewritePrompt({
         content: parsed.content,
         instruction: parsed.instruction,

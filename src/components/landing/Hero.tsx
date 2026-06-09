@@ -34,7 +34,7 @@ export function Hero() {
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70 backdrop-blur-sm"
             >
               <Sparkles className="h-3.5 w-3.5 text-brand-300" />
-              <span>Powered by Gemini Flash · Built for freelancers</span>
+              <span>Powered by Groq · Built for freelancers</span>
             </motion.div>
 
             <motion.h1

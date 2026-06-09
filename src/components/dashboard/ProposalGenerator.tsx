@@ -484,7 +484,7 @@ export function ProposalGenerator({ initial, user }: Props) {
               <span className="thinking-dot" style={{ animationPlayState: generating ? "running" : "paused", opacity: generating ? 1 : 0.2 }} />
               <span className="thinking-dot" style={{ animationPlayState: generating ? "running" : "paused", opacity: generating ? 1 : 0.2 }} />
               <span className="ml-1">
-                {generating ? "Generating with Gemini Flash" : content ? "Ready" : "Workspace"}
+                {generating ? "Generating with Groq" : content ? "Ready" : "Workspace"}
               </span>
             </div>
             <div className="flex items-center gap-1">

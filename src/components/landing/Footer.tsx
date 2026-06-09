@@ -48,7 +48,7 @@ export function LandingFooter() {
 
       <div className="mx-auto max-w-7xl px-6 mt-10 flex items-center justify-between text-xs text-white/40 border-t border-white/5 pt-6">
         <span>© {new Date().getFullYear()} Lumen Labs · All rights reserved</span>
-        <span>Built with Gemini Flash</span>
+        <span>Built with Groq</span>
       </div>
     </footer>
   );

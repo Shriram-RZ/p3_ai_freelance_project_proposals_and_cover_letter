@@ -11,7 +11,7 @@ const FAQS = [
   },
   {
     q: "Which AI does this run on?",
-    a: "Gemini Flash. It's fast, accurate, and cheap enough that we can give you generous limits even on the free tier.",
+    a: "Groq (Llama 3.1 8B Instant). It's blazing fast, accurate, and cheap enough that we can give you generous limits even on the free tier.",
   },
   {
     q: "Will it learn my style?",

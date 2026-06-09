@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { geminiGenerate } from "@/lib/gemini";
+import { groqGenerate } from "@/lib/groq";
 import { proposalPrompt, coverLetterPrompt, type Tone, type Platform } from "@/lib/prompts";
 import { ok, fail, readBody, requireAuth } from "@/lib/api";
 
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 
   let content: string;
   try {
-    content = await geminiGenerate(prompt, { temperature: 0.85, maxOutputTokens: 1024 });
+    content = await groqGenerate(prompt, { temperature: 0.85, maxOutputTokens: 1024 });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "AI generation failed";
     return fail(msg, 502, "ai_error");
