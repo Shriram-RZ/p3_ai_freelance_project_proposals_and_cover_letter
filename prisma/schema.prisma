@@ -124,7 +124,7 @@ model AiGeneration {
   kind        String   // proposal, cover-letter, rewrite, score, pricing, chat
   prompt      String
   output      String
-  model       String   @default("gemini-flash-latest")
+  model       String   @default("llama-3.1-8b-instant")
   tokensIn    Int?
   tokensOut   Int?
   durationMs  Int?
